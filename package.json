@@ -1,0 +1,11 @@
+{
+    "name": "hack-emu",
+    "version": "1.0.0",
+    "devDependencies": {
+        "grunt": "^1.3.0",
+        "grunt-contrib-cssmin": "^3.0.0",
+        "grunt-contrib-watch": "^1.1.0",
+        "grunt-terser": "^1.0.0"
+    },
+    "dependencies": {}
+}

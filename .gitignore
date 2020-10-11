@@ -1,0 +1,5 @@
+node_modules/*
+emsdk/*
+cpp/*
+*.asm
+package-lock.json

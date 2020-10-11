@@ -1,0 +1,214 @@
+* { box-sizing:border-box; }
+:root, body { font-family: sans-serif; }
+
+#ASM textarea,
+#rev-view div,
+#ROM-view,
+#RAM-view,
+#controls {
+    font-family: "Fantasque Sans Mono", 'Courier New', Courier, monospace;
+    font-size: 14px;
+}
+
+#controls select { margin: 5px; }
+
+#controls input[type="text"] {
+    margin: 5px;
+    padding: 5px;
+
+    text-align: right;
+    width: 50px;
+}
+
+#controls span {
+    display: inline-block;
+}
+
+.container {
+    display: flex;
+    width: 80%;
+    max-width: 960px;
+    margin: 0 auto;
+}
+
+.container .mem,
+.container .disp,
+#reg-view div { width: 100%; }
+
+.container .col { width: 480px; }
+
+#ALU {
+    position: absolute;
+
+    height: 125px;
+    width: 520px;
+
+    padding: 5px;
+    margin: 0 5px;
+
+    border-radius: 3px;
+}
+
+#ALU:before {
+    content: 'ALU';
+    font-weight: bold;
+}
+
+#ALU span {
+    display: block;
+    font-size: .75em;
+}
+
+#ALU div { position: absolute; }
+
+#ALU #mux {
+    border-top: 20px solid transparent;
+    border-bottom: 20px solid transparent;
+    border-left: 50px solid #499F68;
+    height: 75px;
+    width: 0;
+
+    margin: 0 auto;
+    bottom: 8px;
+    left: 235px;
+}
+
+#ALU #mux input[type="text"] {
+    position: absolute;
+
+    width: 35px;
+
+    left: -45px;
+    bottom: 8px;
+    z-index: 1;
+
+    color: black;
+    text-align: center;
+}
+
+#ALU #d-in {
+    top: 1.75em;
+    left: 45px;
+}
+
+#ALU #ma-in {
+    top: 4.75em;
+    left: 45px;
+}
+
+#ALU #alu-out {
+    top: 3.25em;
+    right: 45px;
+}
+
+#ALU .line {
+    position: absolute;
+
+    width: 75px;
+    height: 1px;
+
+    bottom: 10px;
+
+    z-index: -1;
+}
+
+#ALU #d-in .line, #ALU #ma-in .line { right: -75px; }
+
+#ALU #alu-out .line { left: -75px; }
+
+#ALU input[type="text"] { width: 125px; }
+
+#screen {
+    margin: 5px;
+    padding: 3px;
+
+    border-radius: 3px;
+}
+
+#controls fieldset {
+    width: 100%;
+}
+
+#ASM textarea {
+    resize: none;
+
+    margin: 5px;
+    width: calc(100% - 10px);
+}
+
+#reg-view div,
+#controls button {
+    padding: 5px;
+    margin: 5px;
+}
+
+#controls fieldset {
+    margin: 5px;
+    padding: 5px;
+}
+
+#controls fieldset input[type="text"] {
+    margin: 0 auto;
+}
+
+#controls fieldset input[type="range"] {
+    vertical-align:middle;
+}
+
+#ALU #mux input[type="text"],
+#reg-view div,
+#ROM-view,
+#RAM-view,
+#ALU,
+#screen {
+    border: 1px solid black;
+}
+
+#reg-view span { margin: 0 15px 0 5px; }
+
+ol { 
+    counter-reset: item -1;
+    list-style-type: none;
+}
+
+#ROM-view { margin-right: 3px; }
+#RAM-view { margin-left: 3px; }
+#ROM-view,
+#RAM-view {
+    padding: 0;
+    margin: 5px;
+
+    height: 550px;
+
+    overflow-y: auto;
+    overflow-x: hidden;
+    position: relative;
+}
+
+#ROM-view div,
+#RAM-view div { line-height: 1.5em; }
+
+#ALU .line,
+#ROM-view div > div > div:not(:last-child),
+#RAM-view div > div > div:not(:last-child) { border-bottom: 1px solid black; }
+
+#ROM-view span,
+#RAM-view span {
+    display: inline-block;
+    text-align: right;
+    width: 3.25em;
+
+    padding-left: .25em;
+    padding-right: .5em;
+
+    border-right: 1px solid black;
+}
+
+#ALU #mux input[type="text"],
+div.scr { background-color: #499F68; }
+
+div.kbd { background-color: #BC4B51}
+
+div.active { background-color: #F4E285 !important; }
+
+/*.container {border: 1px solid red;}*/
