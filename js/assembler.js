@@ -4,7 +4,7 @@ function assemble() {
     let text = document.getElementById("asm-inp").value;
     // Keep an object of lines with their corresponding line number in the user's asm file.
     let lines = {};
-    let labels = {SCREEN: 16384};
+    let labels = { SCREEN: 16384, KBD: 24576 };
 
     let asm_lines = text.split('\n');
 
@@ -30,6 +30,7 @@ function assemble() {
 
     // First pass to find the labels names and assign addresses to them.
     let counter = 0;
+
     for (let i in lines) {
         let line = lines[i];
         if (line[0] == '(') {
@@ -51,16 +52,40 @@ function assemble() {
     for (let i in lines) {
         let line = lines[i];
         if (line[0] == '@') {
-            let addr = line.substr(1);
+            let label = line.substr(1);
 
-            if (!is_int(addr)){
-                if (!labels.hasOwnProperty(addr)) {
+            if (label[0] == 'R' && is_int(label.substr(1))) {
+                label = label.substr(1);
+                lines[i] = '@' + label;
+            }
+
+            if (!is_int(label)){
+                if (!labels.hasOwnProperty(label)) {
                     // Variable addressing starts at 16, then increments for each new variable.
-                    labels[addr] = 16 + counter;
+                    let addr = 16 + counter;
+                    let vals = Object.values(labels);
+                    let used = vals.includes(addr);
+
+                    if (!COMPATIBILITY) {
+                        // For the edge cases where the label happens to occur at the same intance as a variable.
+                        // This functionality differs from the assembler implemented by nand2tetris.
+                        while (used) {
+                            used = false;
+                            for (let laddr of vals) {
+                                if (laddr == addr) {
+                                    used = true;
+                                    addr++;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+
+                    labels[label] = addr;
                     counter++;
                 }
 
-                lines[i] = '@' + labels[addr];
+                lines[i] = '@' + labels[label];
             }
         }
     }
@@ -155,10 +180,17 @@ comps = {
     "D+A": 0b0000010, "D-A": 0b0010011, "A-D": 0b0000111,
     "D+M": 0b1000010, "D-M": 0b1010011, "M-D": 0b1000111,
     "D&A": 0b0000000, "D&M": 0b1000000,
-    "D|A": 0b0010101,"D|M": 0b1010101
+    "D|A": 0b0010101, "D|M": 0b1010101
 }
 
-function asm_c_instruction(inst) {
+comps["A+D"] = comps["D+A"];
+comps["M+D"] = comps["D+M"];
+comps["A&D"] = comps["D&A"];
+comps["D&M"] = comps["M&D"];
+comps["A|D"] = comps["D|A"];
+comps["D|M"] = comps["M|D"];
+
+function asm_c_instruction(inst, line) {
     let dest;
     let comp;
     let jump;
@@ -170,16 +202,30 @@ function asm_c_instruction(inst) {
     comp = semi[0];
     jump = semi[1] || "";
 
-    dest = dests.indexOf(dest);
-    comp = comps[comp];
-    jump = jumps.indexOf(jump);
+    let d = dests.indexOf(dest);
+    if (d == -1) {
+        console.error(`[ASSEMBLER] Unknown destination: "${dest}".`);
+        return null;
+    }
+
+    let c = comps[comp];
+    if (c == undefined) {
+        console.error(`[ASSEMBLER] Unknown comparison: "${comp}".`);
+        return null;
+    }
+
+    let j = jumps.indexOf(jump);
+    if (d == -1) {
+        console.error(`[ASSEMBLER] Unknown jump: "${jump}".`);
+        return null;
+    }
 
     let binary = 0;
     binary = 0b111 << 13;
 
-    binary |= comp << 6;
-    binary |= dest << 3;
-    binary |= jump;
+    binary |= c << 6;
+    binary |= d << 3;
+    binary |= j;
 
     return binary;
 }

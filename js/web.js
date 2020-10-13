@@ -196,3 +196,17 @@ window.addEventListener("load", () => {
 
     active_loop();
 });
+
+document.addEventListener("keydown", (e) => {
+    if (e.key.length != 1) return; // Do not listen for control keys
+    registers[3].value = e.key;
+
+    // The CPUEmulator for nand2tetris only transmits the capital letter.
+    let key = COMPATIBILITY ? e.key.toUpperCase().charCodeAt(0) : e.key.charCodeAt(0);
+    write_RAM(24576, key);
+});
+
+document.addEventListener("keyup", (e) => {
+    registers[3].value = "";
+    write_RAM(24576, 0);
+});

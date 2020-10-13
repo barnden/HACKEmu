@@ -81,20 +81,22 @@ function from_twos(a) {
     return a;
 }
 
-function writeRAM(addr, val) {
+function write_RAM(addr, val) {
     // Use wrapper function to set screen_update <- true if we modify a memory address corresponding to a pixel.
-    set_active("RAM-" + addr);
+    if (addr != 24576) {
+        set_active("RAM-" + addr);
+
+        if (addr >= 16384) {
+            let temp = (addr - 16384) * 16;
+            let x = temp % 512;
+            let y = Math.floor(temp / 512);
+
+            for (let i = 0; i < 16; i++)
+                draw_pixel(x++, y, (val >> i) & 1)
+        }
+    } else active_chg = true;
 
     RAM[addr] = val;
-
-    if (addr >= 16384) {
-        let temp = (addr - 16384) * 16;
-        let x = temp % 512;
-        let y = Math.floor(temp / 512);
-
-        for (let i = 0; i < 16; i++)
-            draw_pixel(x++, y, (RAM[addr] >> i) & 1)
-    }
 }
 
 function execute() {
@@ -203,20 +205,20 @@ function execute() {
             case 0: // Do nothing.
                 break;
             case 1:
-                writeRAM(A, out);
+                write_RAM(A, out);
                 break;
             case 2:
                 D = out;
                 break;
             case 3:
-                writeRAM(A, out);
+                write_RAM(A, out);
                 D = out;
                 break;
             case 4:
                 A = out;
                 break;
             case 5:
-                writeRAM(A, out);
+                write_RAM(A, out);
                 A = out;
                 break;
             case 6:
@@ -224,7 +226,7 @@ function execute() {
                 D = out;
                 break;
             case 7:
-                writeRAM(A, out);
+                write_RAM(A, out);
                 A = out;
                 D = out;
                 break;

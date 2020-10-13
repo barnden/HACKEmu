@@ -44,20 +44,8 @@ var registers = [
     document.getElementById("tar"),
     document.getElementById("trd"),
     document.getElementById("tpc"),
-    document.getElementById("tkb"),
+    document.getElementById("tkb"), // A 'virtual' register corresponding to RAM[24576]
 ];
-let input = 0;
-
-document.addEventListener("keydown", (e) => {
-    //if (e.key.length != 1) return; // Do not listen for control keys
-    input = e.key;
-    registers[3].value = e.key;
-});
-
-document.addEventListener("keyup", (e) => {
-    input = 0;
-    registers[3].value = "";
-});
 
 var alu_io = [
     document.getElementById("tdin"),
